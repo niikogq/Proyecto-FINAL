@@ -10,11 +10,6 @@ const usersRouter = require('./src/routes/users'); // Rutas de usuarios
 const reportesRouter = require('./src/routes/reportes'); // Rutas de reportes
 const Notification = require('./src/models/Notification');
 
-
-
-
-
-
 app.use(cors());
 app.use(express.json());
 
@@ -28,7 +23,7 @@ mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('Conectado a MongoDB Atlas 🚀'))
+.then(() => console.log('Conectado a MongoDB Atlas'))
 .catch(err => console.error('Error conectando a MongoDB:', err));
 
 
