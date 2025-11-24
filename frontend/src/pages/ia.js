@@ -1,23 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { Box, TextField, Button, Typography, Paper } from '@mui/material';
 
-function Ia() {
-  const [data, setData] = useState(null);
+function Ia({ usuario }) {
+  // Esto previene el error si usuario no existe
+  if (!usuario) usuario = { rol: "admin" };
+    
+  const [input, setInput] = useState('');
+  const [chat, setChat] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:3001/api/ia')
-      .then(res => setData(res.data.message))
-      .catch(err => {
-        console.error(err);
-        setData('Error conectando al backend');
+  // Esta función manda el mensaje al backend y actualiza el chat
+  const handleSend = async () => {
+    console.log("Enviando mensaje:", input, usuario.rol); // Agrega log de ayuda
+    if (!input.trim()) return; // Evita si envías solo espacios
+    setChat(c => [...c, { from: 'user', text: input }]);
+    try {
+      // Llamada correcta
+      const response = await fetch('http://localhost:3001/api/ia/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input, rol: usuario.rol })
       });
-  }, []);
+      const data = await response.json();
+      setChat(c => [...c, { from: 'ia', text: data.answer }]);
+    } catch (error) {
+      setChat(c => [...c, { from: 'ia', text: 'No se pudo contactar con la IA.' }]);
+    }
+    setInput('');
+  };
 
   return (
-    <div>
-      <h2>IA</h2>
-      <p>{data || 'Cargando...'}</p>
-    </div>
+    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h5" gutterBottom>Chat IA GEMPROTEC</Typography>
+        <Box sx={{ minHeight: 240, mb: 2 }}>
+          {chat.map((msg, idx) => (
+            <Typography key={idx}
+                        align={msg.from === 'user' ? 'right' : 'left'}
+                        sx={{
+                          my: 1,
+                          fontWeight: msg.from === 'ia' ? 'bold' : 'normal',
+                          bgcolor: msg.from === 'ia' ? "#f0f3fc" : "#e5e7eb",
+                          p: 1,
+                          borderRadius: 2
+                        }}>
+              {msg.text}
+            </Typography>
+          ))}
+        </Box>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <TextField
+            fullWidth
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            label="Escribe tu consulta..."
+          />
+          <Button variant="contained" onClick={handleSend}>Enviar</Button>
+        </Box>
+      </Paper>
+    </Box>
   );
 }
 

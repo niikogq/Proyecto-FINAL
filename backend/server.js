@@ -3,21 +3,26 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const mongoURI = 'mongodb+srv://ngalloquinchen_db_user:yFxczgvDPMpDZ5Qm@gemprotec.bqxbwht.mongodb.net/?appName=GEMPROTEC';
 const app = express();
-const mainRoutes = require('./src/routes/mainRoutes');  // Este path debe ser correcto
-const workorder = require('./src/routes/workorders'); // Este path debe ser correcto
-const assetRoutes = require('./src/routes/mainRoutes'); // Nuevo path para las rutas de activos
-const usersRouter = require('./src/routes/users'); // Rutas de usuarios
-const reportesRouter = require('./src/routes/reportes'); // Rutas de reportes
-const Notification = require('./src/models/Notification');
 
-app.use(cors());
+// Rutas principales (asegúrate que las rutas son correctas)
+const mainRoutes = require('./src/routes/mainRoutes');
+const workorderRoutes = require('./src/routes/workorders');
+const usersRouter = require('./src/routes/users');
+const reportesRouter = require('./src/routes/reportes');
+const iaRouter = require('./src/routes/ia');
+
+
+const allowedOrigins = ['http://localhost:3000'];
+app.use(cors({ origin: allowedOrigins, credentials: true}));
+
 app.use(express.json());
 
 app.use('/api', mainRoutes);
-app.use('/api/workorders', workorder);
+app.use('/api/workorders', workorderRoutes);
 app.use('/api/users', usersRouter);
-app.use('/api', require('./src/routes/reportes')); // Rutas de reportes
+app.use('/api', reportesRouter);
 app.use('/api/notifications', require('./src/routes/notifications'));
+app.use('/api/ia', iaRouter);
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
@@ -25,7 +30,6 @@ mongoose.connect(mongoURI, {
 })
 .then(() => console.log('Conectado a MongoDB Atlas'))
 .catch(err => console.error('Error conectando a MongoDB:', err));
-
 
 app.listen(3001, () => {
   console.log('Servidor backend escuchando en puerto 3001');

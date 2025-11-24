@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
@@ -8,8 +8,10 @@ import MuiAlert from '@mui/material/Alert';
 import ReportModal from '../components/ReportModal';
 import ReportDetailModal from '../components/ReportDetailModal';
 
+// Usa variable para la URL (cambia a tu dominio si lo llevas a producción)
+const API_URL = 'http://localhost:3001/api/reportes';
+
 function Reports({ usuario }) {
-  // Hooks y estados arriba
   const [form, setForm] = useState({
     titulo: '', tipo: '', fecha_inicio: '', fecha_fin: '', observaciones_finales: '',
   });
@@ -25,15 +27,16 @@ function Reports({ usuario }) {
     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
   });
 
-  const fetchReportes = () => {
-    axios.get('/api/reportes', getAuthHeader())
+  const fetchReportes = useCallback(() => {
+    axios.get(API_URL, getAuthHeader())
       .then(res => setReportes(res.data))
       .catch(() => setReportes([]));
-  };
+  }, []);
+
   useEffect(() => {
     fetchReportes();
-    // eslint-disable-next-line
-}, []);
+  }, [fetchReportes]);
+
   const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
 
   const handleOpenEdit = (reporte = null) => {
@@ -60,21 +63,25 @@ function Reports({ usuario }) {
   const handleSubmit = e => {
     e.preventDefault();
     if (editReporte) {
-      axios.put(`/api/reportes/${editReporte._id}`, form, getAuthHeader())
+      axios.put(`${API_URL}/${editReporte._id}`, form, getAuthHeader())
         .then(() => {
           setSnackbar({ open: true, message: 'Reporte actualizado', severity: 'success' });
           fetchReportes();
           handleCloseEdit();
         })
-        .catch(() => setSnackbar({ open: true, message: 'Error al editar reporte', severity: 'error' }));
+        .catch((err) => {
+          setSnackbar({ open: true, message: 'Error al editar reporte', severity: 'error' });
+        });
     } else {
-      axios.post('/api/reportes', form, getAuthHeader())
+      axios.post(API_URL, form, getAuthHeader())
         .then(() => {
           setSnackbar({ open: true, message: 'Reporte creado', severity: 'success' });
           fetchReportes();
           handleCloseEdit();
         })
-        .catch(() => setSnackbar({ open: true, message: 'Error al crear reporte', severity: 'error' }));
+        .catch((err) => {
+          setSnackbar({ open: true, message: 'Error al crear reporte', severity: 'error' });
+        });
     }
   };
 

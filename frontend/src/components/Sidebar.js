@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Box, Typography, Avatar } from '@mui/material';
+import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Box, Typography, Avatar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import StorageIcon from '@mui/icons-material/Storage';
@@ -54,8 +54,7 @@ const Sidebar = ({ active, onSelect, user }) => {
         </Box>
         <List>
           {menuItems.map((item, idx) => (
-            <ListItem
-              button
+            <ListItemButton
               key={item.label}
               selected={active === item.route}
               onClick={() => onSelect(item.route)}
@@ -66,7 +65,7 @@ const Sidebar = ({ active, onSelect, user }) => {
             >
               <ListItemIcon sx={{ color: '#3a434f' }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.label} />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
         <Box sx={{ flexGrow: 1 }} />
