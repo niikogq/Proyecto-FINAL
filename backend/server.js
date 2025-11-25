@@ -9,7 +9,7 @@ const mainRoutes = require('./src/routes/mainRoutes');
 const workorderRoutes = require('./src/routes/workorders');
 const usersRouter = require('./src/routes/users');
 const reportesRouter = require('./src/routes/reportes');
-const iaRouter = require('./src/routes/ia');
+const dashboardRouter = require('./src/routes/dashboard');
 
 
 const allowedOrigins = ['http://localhost:3000'];
@@ -22,7 +22,7 @@ app.use('/api/workorders', workorderRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api', reportesRouter);
 app.use('/api/notifications', require('./src/routes/notifications'));
-app.use('/api/ia', iaRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,

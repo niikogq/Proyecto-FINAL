@@ -1,0 +1,200 @@
+import React from 'react';
+import { Card, CardContent, Typography, Box, List, ListItem, ListItemIcon, ListItemText, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import BuildIcon from '@mui/icons-material/Build';
+import PeopleIcon from '@mui/icons-material/People';
+import { Doughnut, Bar } from 'react-chartjs-2';
+import { Chart, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
+
+export function Indicadores({ datos }) {
+  return (
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 4, gap: 3 }}>
+        <IndicadorCard
+        color="#44b979"
+        icon={<AssignmentIcon />}  // O el icono que prefieras para activos totales
+        titulo="Activos"
+        valor={datos.activos?.total ?? 0}
+        subtitulo="Total de activos registrados"
+        variacion={null} // Puedes eliminar esta línea si no quieres mostrar variación
+        />
+      <IndicadorCard
+        color="#1e88e5"
+        icon={<AssignmentIcon />}
+        titulo="Órdenes en Progreso"
+        valor={datos.workorders?.['En Progreso'] ?? 0}
+        subtitulo="Programadas para hoy"
+        variacion="75% en tiempo"
+      />
+      <IndicadorCard
+        color="#ffa726"
+        icon={<ReportProblemIcon />}
+        titulo="Fallos Reportados Hoy"
+        valor={datos.fallosHoy ?? 0}
+        subtitulo="2 de alta prioridad"
+        variacion="+3 respecto a ayer"
+      />
+    </Box>
+  );
+}
+
+function IndicadorCard({ color, icon, titulo, valor, subtitulo, variacion }) {
+  return (
+    <Card sx={{ bgcolor: color, color: '#fff', minWidth: 250, flex: 1 }}>
+      <CardContent>
+        <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+          <Typography variant="h6">{titulo}</Typography>
+          {icon}
+        </Box>
+        <Typography variant="h3">{valor}</Typography>
+        {subtitulo && <Typography sx={{ opacity: 0.85 }}>{subtitulo}</Typography>}
+        {variacion && <Typography fontSize={14} sx={{ opacity: 0.7 }}>{variacion}</Typography>}
+      </CardContent>
+    </Card>
+  );
+}
+
+export function EstadoActivosGrafico({ activos }) {
+  const labels = Object.keys(activos.porEstado);
+  const data = Object.values(activos.porEstado);
+
+  const colors = ['#44b979', '#ffc107', '#e53935', '#8884d8'];
+
+  return (
+    <Card sx={{ mb: 3, p: 1.8 }}>
+      <Typography variant="h6" gutterBottom>Estado de Activos</Typography>
+      <Doughnut
+        data={{
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: colors.slice(0, labels.length),
+            borderWidth: 1
+          }]
+        }}
+        options={{
+          cutout: '60%',
+          plugins: {
+            legend: { display: true, position: 'right' }
+          },
+        }}
+      />
+    </Card>
+  );
+}
+
+export function OrdenesGrafico({ workordersPorPeriodo }) {
+  if (!workordersPorPeriodo || !workordersPorPeriodo.labels) {
+    return (
+      <Card sx={{ mb: 3, p: 2 }}>
+        <Typography variant="h6" gutterBottom>Órdenes de Trabajo</Typography>
+        <Typography sx={{ mt: 2 }}>No hay datos de órdenes de trabajo.</Typography>
+      </Card>
+    );
+  }
+  const data = {
+    labels: workordersPorPeriodo.labels,
+    datasets: [
+      {
+        label: 'Pendientes',
+        backgroundColor: '#e53935',
+        data: workordersPorPeriodo.pendientes
+      },
+      {
+        label: 'En Progreso',
+        backgroundColor: '#1e88e5',
+        data: workordersPorPeriodo.enProgreso
+      },
+      {
+        label: 'Completadas',
+        backgroundColor: '#44b979',
+        data: workordersPorPeriodo.completadas
+      }
+    ]
+  };
+  return (
+    <Card sx={{ mb: 3, p: 2 }}>
+      <Typography variant="h6" gutterBottom>Órdenes de Trabajo</Typography>
+      <Bar data={data} options={{ plugins: { legend: { position: 'top' } }, responsive: true }} />
+    </Card>
+  );
+}
+
+export function ActividadReciente({ actividades }) {
+  return (
+    <Card sx={{ p: 2, mb: 2, minHeight: 240 }}>
+      <Typography variant="h6" gutterBottom>Actividad Reciente</Typography>
+      <List>
+        {actividades && actividades.length
+          ? actividades.map((act, idx) => (
+            <ListItem key={idx}>
+              <ListItemIcon>
+                <AssignmentTurnedInIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={act.message}
+                secondary={
+                  `Por ${act.usuario || 'Sistema'} — ${act.tipoActividad || ''}` +
+                  (act.createdAt ? ' — ' + new Date(act.createdAt).toLocaleString() : '')
+                }
+              />
+            </ListItem>
+          ))
+          : <ListItem><ListItemText primary="No hay actividad reciente." /></ListItem>
+        }
+      </List>
+    </Card>
+  );
+}
+
+export function UsuariosPorRol({ usuarios }) {
+  return (
+    <Card sx={{ p: 2, mb: 2 }}>
+      <Typography variant="h6" gutterBottom>Cantidad de Usuarios</Typography>
+      <List>
+        <ListItem>
+          <ListItemIcon><BuildIcon color="info" /></ListItemIcon>
+          <ListItemText primary={`Supervisores: ${usuarios.supervisor ?? 0}`} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon><PeopleIcon color="success" /></ListItemIcon>
+          <ListItemText primary={`Técnicos: ${usuarios.tecnico ?? 0}`} />
+        </ListItem>
+      </List>
+    </Card>
+  );
+}
+
+export function TecnicosDisponibles({ tecnicos }) {
+  return (
+    <Card sx={{ p: 2, mb: 2 }}>
+      <Typography variant="h6" gutterBottom>Técnicos Disponibles</Typography>
+      {tecnicos && tecnicos.length > 0 ? (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Estado</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tecnicos.map((tecnico, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{tecnico.nombre}</TableCell>
+                <TableCell>{tecnico.email}</TableCell>
+                <TableCell>
+                  <Typography color={tecnico.estado === 'activo' ? 'green' : 'red'}>
+                    {tecnico.estado}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : <Typography sx={{ mt: 1 }}>No hay técnicos disponibles.</Typography>}
+    </Card>
+  );
+}

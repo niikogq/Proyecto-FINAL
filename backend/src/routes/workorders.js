@@ -9,10 +9,14 @@ const allowRoles = require('../middleware/roles');
 // Crear orden de trabajo y notificar al técnico asignado
 router.post('/', auth, allowRoles('admin', 'tecnico'), async (req, res) => {
   try {
-    const workOrder = new WorkOrder(req.body);
+    // Asegurar estado Pendiente al crear
+    const workOrderData = {
+      ...req.body,
+      status: 'Pendiente'
+    };
+    const workOrder = new WorkOrder(workOrderData);
     await workOrder.save();
 
-    // --- LOGS DE DEPURACIÓN ---
     console.log('AssignedTo:', workOrder.assignedTo);
     const assignedTech = await User.findOne({ email: workOrder.assignedTo, rol: 'tecnico' });
     console.log('Usuario técnico encontrado:', assignedTech);
@@ -34,28 +38,76 @@ router.post('/', auth, allowRoles('admin', 'tecnico'), async (req, res) => {
   }
 });
 
-// Listar todas las órdenes
+// Listar órdenes según el rol del usuario
 router.get('/', auth, allowRoles('admin', 'tecnico', 'supervisor'), async (req, res) => {
-  const orders = await WorkOrder.find().populate('asset');
+  let query = {};
+  if (req.user.rol === 'tecnico') {
+    query.assignedTo = req.user.email; // solo las asignadas a este técnico
+  }
+  const orders = await WorkOrder.find(query).populate('asset');
   res.json(orders);
 });
 
 // Obtener orden por ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, allowRoles('admin', 'tecnico', 'supervisor'), async (req, res) => {
   const order = await WorkOrder.findById(req.params.id).populate('asset');
+  if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
+
+  // Opcional: Validar que técnico vea solo sus órdenes
+  if (req.user.rol === 'tecnico' && order.assignedTo !== req.user.email) {
+    return res.status(403).json({ error: 'No autorizado para esta orden' });
+  }
+
   res.json(order);
 });
 
-// Actualizar orden
+// Actualizar orden (solo admin, supervisor)
 router.put('/:id', auth, allowRoles('admin', 'supervisor'), async (req, res) => {
   const order = await WorkOrder.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
   res.json(order);
 });
 
-// Eliminar orden
+// Eliminar orden (solo admin, supervisor)
 router.delete('/:id', auth, allowRoles('admin', 'supervisor'), async (req, res) => {
   await WorkOrder.findByIdAndDelete(req.params.id);
   res.sendStatus(204);
+});
+
+// Técnico comienza la orden (solo técnico asignado)
+router.put('/:id/comenzar', auth, allowRoles('tecnico'), async (req, res) => {
+  const order = await WorkOrder.findById(req.params.id);
+  if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
+
+  if (order.assignedTo !== req.user.email) {
+    return res.status(403).json({ error: 'No autorizado para comenzar esta orden' });
+  }
+  if (order.status !== 'Pendiente') {
+    return res.status(400).json({ error: 'La orden no está en estado Pendiente' });
+  }
+
+  order.status = 'En Progreso';
+  order.startDate = new Date();
+  await order.save();
+  res.json(order);
+});
+
+// Técnico finaliza la orden (solo técnico asignado)
+router.put('/:id/finalizar', auth, allowRoles('tecnico'), async (req, res) => {
+  const order = await WorkOrder.findById(req.params.id);
+  if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
+
+  if (order.assignedTo !== req.user.email) {
+    return res.status(403).json({ error: 'No autorizado para finalizar esta orden' });
+  }
+  if (order.status !== 'En Progreso') {
+    return res.status(400).json({ error: 'La orden no está en estado En Progreso' });
+  }
+
+  order.status = 'Completada';
+  order.endDate = new Date();
+  await order.save();
+  res.json(order);
 });
 
 module.exports = router;

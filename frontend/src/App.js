@@ -5,12 +5,10 @@ import Dashboard from './pages/Dashboard';
 import Assets from './pages/Assets';
 import WorkOrders from './pages/WorkOrders';
 import Reports from './pages/Reports';
-import IA from './pages/ia';
 import Settings from './pages/Settings';
 import Header from './components/header';
 import Login from './components/Login';
 import Perfil from './pages/Perfil'; // O el nombre de tu carpeta/pages
-import IAChatbot from './components/IAChatbot';
 
 // Layout para páginas internas: ¡Mueve a función y dale props!
 const Layout = ({ children, usuario, handleLogout }) => {
@@ -20,7 +18,6 @@ const Layout = ({ children, usuario, handleLogout }) => {
     '/activos': 'Activos',
     '/workorders': 'Órdenes de trabajo',
     '/reportes': 'Reportes',
-    '/ai': 'AI',
     '/settings': 'Configuración'
   };
   const currentTitle = titles[location.pathname] || '';
@@ -68,13 +65,11 @@ function App() {
                     <Route path="activos" element={<Assets usuario={usuario} />} />
                     <Route path="workorders" element={<WorkOrders usuario={usuario} />} />
                     <Route path="reportes" element={<Reports usuario={usuario} />} />
-                    <Route path="ai" element={<IA />} />
                     <Route path="settings" element={<Settings usuario={usuario} />} />
                     <Route path="/perfil" element={<Perfil />} />
                     <Route path="*" element={<Navigate to="/dashboard" />} />
                   </Routes>
                 </Layout>
-                <IAChatbot usuario={usuario} /> {/* ← aquí va el chatbot flotante */}
               </>
             )
             : <Navigate to="/login" replace />
