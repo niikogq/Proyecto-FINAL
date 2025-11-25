@@ -10,6 +10,7 @@ import Settings from './pages/Settings';
 import Header from './components/header';
 import Login from './components/Login';
 import Perfil from './pages/Perfil'; // O el nombre de tu carpeta/pages
+import IAChatbot from './components/IAChatbot';
 
 // Layout para páginas internas: ¡Mueve a función y dale props!
 const Layout = ({ children, usuario, handleLogout }) => {
@@ -56,24 +57,25 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Login como página dedicada */}
         <Route path="/login" element={<Login onLogin={setUsuario} />} />
-        {/* Todas las rutas internas, sólo si el usuario está autenticado */}
         <Route path="/*" element={
           usuario
             ? (
-              <Layout usuario={usuario} handleLogout={handleLogout}>
-                <Routes>
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="activos" element={<Assets usuario={usuario} />} />
-                  <Route path="workorders" element={<WorkOrders usuario={usuario} />} />
-                  <Route path="reportes" element={<Reports usuario={usuario} />} />
-                  <Route path="ai" element={<IA />} />
-                  <Route path="settings" element={<Settings usuario={usuario} />} />
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
-                  <Route path="/perfil" element={<Perfil />} />
-                </Routes>
-              </Layout>
+              <>
+                <Layout usuario={usuario} handleLogout={handleLogout}>
+                  <Routes>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="activos" element={<Assets usuario={usuario} />} />
+                    <Route path="workorders" element={<WorkOrders usuario={usuario} />} />
+                    <Route path="reportes" element={<Reports usuario={usuario} />} />
+                    <Route path="ai" element={<IA />} />
+                    <Route path="settings" element={<Settings usuario={usuario} />} />
+                    <Route path="/perfil" element={<Perfil />} />
+                    <Route path="*" element={<Navigate to="/dashboard" />} />
+                  </Routes>
+                </Layout>
+                <IAChatbot usuario={usuario} /> {/* ← aquí va el chatbot flotante */}
+              </>
             )
             : <Navigate to="/login" replace />
         } />

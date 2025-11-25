@@ -34,3 +34,4 @@ mongoose.connect(mongoURI, {
 app.listen(3001, () => {
   console.log('Servidor backend escuchando en puerto 3001');
 });
+

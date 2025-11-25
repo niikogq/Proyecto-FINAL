@@ -10,15 +10,19 @@ function Ia({ usuario }) {
 
   // Esta función manda el mensaje al backend y actualiza el chat
   const handleSend = async () => {
-    console.log("Enviando mensaje:", input, usuario.rol); // Agrega log de ayuda
-    if (!input.trim()) return; // Evita si envías solo espacios
+    if (!input.trim()) return;
     setChat(c => [...c, { from: 'user', text: input }]);
     try {
-      // Llamada correcta
       const response = await fetch('http://localhost:3001/api/ia/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input, rol: usuario.rol })
+        body: JSON.stringify({
+          message: input,
+          rol: usuario.rol,
+          nombre: usuario.nombre,
+          email: usuario.email,
+          token: localStorage.getItem('token')
+        })
       });
       const data = await response.json();
       setChat(c => [...c, { from: 'ia', text: data.answer }]);
@@ -27,6 +31,7 @@ function Ia({ usuario }) {
     }
     setInput('');
   };
+
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
