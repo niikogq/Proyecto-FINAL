@@ -27,8 +27,23 @@ router.get('/', async (req, res) => {
       admin: await User.countDocuments({ rol: 'admin' }),
     };
 
-    // Técnicos disponibles (estado = 'activo')
-    const tecnicosDisponibles = await User.find({ rol: 'tecnico', estado: 'activo' }).lean();
+    const todosTecnicos = await User.find({ rol: 'tecnico', estado: 'activo' }).lean();
+    
+    // Busca emails de técnicos ocupados (con orden "En Progreso")
+    const enCurso = await WorkOrder.find({ status: 'En Progreso' }).lean();
+    
+    const tecnicosOcupadosSet = new Set(
+      enCurso
+        .map(wo => (wo.assignedTo || '').trim().toLowerCase())
+        .filter(Boolean)
+      );
+
+
+    // Técnicos disponibles: no tienen ninguna "En Progreso"
+    const tecnicosDisponibles = todosTecnicos.filter(tec => !tecnicosOcupadosSet.has(tec.email));
+    // Técnicos ocupados: tienen alguna "En Progreso"
+    const tecnicosOcupados = todosTecnicos.filter(tec => tecnicosOcupadosSet.has(tec.email));
+
 
     // Actividad reciente tipo log (usando notificaciones como base)
     let actividadReciente = [];
@@ -85,6 +100,7 @@ router.get('/', async (req, res) => {
       fallosHoy: ordersCounts['Pendiente'],
       usuariosPorRol,
       tecnicosDisponibles,
+      tecnicosOcupados,
       actividadReciente,
       workordersPorPeriodo
     });

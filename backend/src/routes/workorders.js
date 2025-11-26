@@ -89,6 +89,13 @@ router.put('/:id/comenzar', auth, allowRoles('tecnico'), async (req, res) => {
   order.status = 'En Progreso';
   order.startDate = new Date();
   await order.save();
+
+  // CAMBIO: poner activo en "En mantenimiento" si corresponde
+  if (order.asset) {
+    const Activo = require('../models/activos'); // importa aquí si no estaba arriba
+    await Activo.findByIdAndUpdate(order.asset, { estado: 'En mantenimiento' });
+  }
+
   res.json(order);
 });
 

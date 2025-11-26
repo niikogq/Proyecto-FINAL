@@ -12,16 +12,27 @@ import PersonIcon from '@mui/icons-material/Person';
 const drawerWidth = 220;
 
 const menuItems = [
-  { label: 'Dashboard', icon: <DashboardIcon />, route: '/dashboard' },
-  { label: 'Activos', icon: <StorageIcon />, route: '/activos' },
-  { label: 'Órdenes de trabajo', icon: <AssignmentIcon />, route: '/workorders' },
-  { label: 'Reportes', icon: <AssessmentIcon />, route: '/reportes' },
-  { label: 'AI', icon: <SmartToyIcon />, route: '/ai' },
-  { label: 'Settings', icon: <SettingsIcon />, route: '/settings' }
+  { key: 'dashboard', label: 'Dashboard', icon: <DashboardIcon />, route: '/dashboard' },
+  { key: 'activos', label: 'Activos', icon: <StorageIcon />, route: '/activos' },
+  { key: 'workorders', label: 'Órdenes de trabajo', icon: <AssignmentIcon />, route: '/workorders' },
+  { key: 'reportes', label: 'Reportes', icon: <AssessmentIcon />, route: '/reportes' },
+  { key: 'ai', label: 'AI', icon: <SmartToyIcon />, route: '/ai' },
+  { key: 'settings', label: 'Settings', icon: <SettingsIcon />, route: '/settings' }
 ];
+
+// Restricciones por rol
+const permisosPorRol = {
+  admin:       ['dashboard', 'activos', 'workorders', 'reportes', 'ai', 'settings'],
+  supervisor:  ['dashboard', 'workorders', 'reportes', 'ai'],
+  tecnico:     ['dashboard', 'workorders']
+};
 
 const Sidebar = ({ active, onSelect, user }) => {
   const navigate = useNavigate();
+  const rol = user?.rol || 'tecnico'; // por defecto para pruebas/deploy
+
+  // Filtra el menú según rol
+  const itemsPermitidos = menuItems.filter(item => permisosPorRol[rol]?.includes(item.key));
 
   return (
     <Drawer
@@ -53,7 +64,7 @@ const Sidebar = ({ active, onSelect, user }) => {
           </Typography>
         </Box>
         <List>
-          {menuItems.map((item, idx) => (
+          {itemsPermitidos.map((item) => (
             <ListItemButton
               key={item.label}
               selected={active === item.route}

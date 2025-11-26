@@ -142,6 +142,12 @@ const WorkOrders = ({ usuario }) => {
         open={openDetail}
         onClose={() => setOpenDetail(false)}
         order={orderDetail}
+        usuario={usuario}
+        onStatusChange={() => {
+          // Refresca lista al cambiar estado
+          axios.get('/api/workorders', getAuthHeader())
+            .then(res => setOrders(res.data));
+        }}
       />
 
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose}>

@@ -52,7 +52,10 @@ export default function Dashboard() {
           <UsuariosPorRol usuarios={datos.usuariosPorRol} />
         </Grid>
         <Grid gridColumn="span 3">
-          <TecnicosDisponibles tecnicos={datos.tecnicosDisponibles} />
+        <TecnicosDisponibles
+          tecnicos={datos.tecnicosDisponibles}
+          tecnicosOcupados={datos.tecnicosOcupados}
+        />
         </Grid>
       </Grid>
     </Box>

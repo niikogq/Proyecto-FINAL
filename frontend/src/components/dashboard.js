@@ -23,10 +23,9 @@ export function Indicadores({ datos }) {
       <IndicadorCard
         color="#1e88e5"
         icon={<AssignmentIcon />}
-        titulo="Órdenes en Progreso"
+        titulo="Órdenes de Trabajo"
         valor={datos.workorders?.['En Progreso'] ?? 0}
-        subtitulo="Programadas para hoy"
-        variacion="75% en tiempo"
+        subtitulo="Ordenes de progreso"
       />
       <IndicadorCard
         color="#ffa726"
@@ -167,12 +166,12 @@ export function UsuariosPorRol({ usuarios }) {
   );
 }
 
-export function TecnicosDisponibles({ tecnicos }) {
+export function TecnicosDisponibles({ tecnicos = [], tecnicosOcupados = [] }) {
   return (
     <Card sx={{ p: 2, mb: 2 }}>
       <Typography variant="h6" gutterBottom>Técnicos Disponibles</Typography>
-      {tecnicos && tecnicos.length > 0 ? (
-        <Table>
+      {tecnicos.length > 0 ? (
+        <Table size="small" sx={{ mb: 2 }}>
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
@@ -182,19 +181,45 @@ export function TecnicosDisponibles({ tecnicos }) {
           </TableHead>
           <TableBody>
             {tecnicos.map((tecnico, idx) => (
-              <TableRow key={idx}>
+              <TableRow key={tecnico._id || idx}>
                 <TableCell>{tecnico.nombre}</TableCell>
                 <TableCell>{tecnico.email}</TableCell>
                 <TableCell>
-                  <Typography color={tecnico.estado === 'activo' ? 'green' : 'red'}>
-                    {tecnico.estado}
-                  </Typography>
+                  <Typography color="green">Disponible</Typography>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      ) : <Typography sx={{ mt: 1 }}>No hay técnicos disponibles.</Typography>}
+      ) : (
+        <Typography sx={{ mt: 1, mb: 2 }}>No hay técnicos disponibles.</Typography>
+      )}
+
+      <Typography variant="h6" gutterBottom>Técnicos Ocupados</Typography>
+      {tecnicosOcupados.length > 0 ? (
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Estado</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tecnicosOcupados.map((tecnico, idx) => (
+              <TableRow key={`o${tecnico._id || idx}`}>
+                <TableCell>{tecnico.nombre}</TableCell>
+                <TableCell>{tecnico.email}</TableCell>
+                <TableCell>
+                  <Typography color="orange">Ocupado</Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <Typography sx={{ mt: 1 }}>No hay técnicos ocupados.</Typography>
+      )}
     </Card>
   );
 }
