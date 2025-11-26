@@ -3,35 +3,53 @@ import { AppBar, Toolbar, Typography, Box, IconButton, Badge, Button, Menu, Menu
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // <--- NUEVO
 
 const capitalize = str => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
 const Header = ({ title, user, onLogout }) => {
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate(); // <--- NUEVO
 
   useEffect(() => {
-    console.log('Usuario logueado:', user);
     if (user && user.rol === 'tecnico') {
       axios.get('/api/notifications', {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       })
-      .then(res => {
-        setNotifications(res.data);
-        console.log('Notificaciones:', res.data);
-      })
-      .catch(err => {
-        setNotifications([]);
-        console.error('Error al traer notif:', err);
-      });
+      .then(res => setNotifications(res.data))
+      .catch(() => setNotifications([]));
     }
   }, [user]);
-  // Cuenta solo las no leídas para el badge
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // Menú de notificaciones
   const handleOpenMenu = (event) => setAnchorEl(event.currentTarget);
   const handleCloseMenu = () => setAnchorEl(null);
+
+  // Handler para ir a la orden al pulsar una notificación
+  const handleNotificationClick = async (noti) => {
+    handleCloseMenu();
+
+    // Marca como leída:
+    if (!noti.read) {
+      try {
+        await axios.post(`/api/notifications/${noti._id}/read`, {}, {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+        });
+        setNotifications(notifications =>
+          notifications.map(n => n._id === noti._id ? { ...n, read: true } : n)
+        );
+      } catch (err) {}
+    }
+
+    // Navega al link (o módulo por defecto)
+    if (noti.link) {
+      navigate(noti.link);
+    } else {
+      navigate('/workorders');
+    }
+  };
 
   return (
     <AppBar
@@ -72,6 +90,7 @@ const Header = ({ title, user, onLogout }) => {
                     fontWeight: noti.read ? 'normal' : 'bold',
                     color: !noti.read ? '#1976d2' : '#555'
                   }}
+                  onClick={() => handleNotificationClick(noti)}
                 >
                   {noti.message}
                 </MenuItem>

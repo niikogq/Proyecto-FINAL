@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, CircularProgress, Grid } from '@mui/material';
-import {
-  Indicadores,
-  EstadoActivosGrafico,
-  ActividadReciente,
-  UsuariosPorRol,
-  TecnicosDisponibles,
-  OrdenesGrafico
-} from '../components/dashboard';
+import { Indicadores, EstadoActivosGrafico, ActividadReciente, UsuariosPorRol, TecnicosDisponibles, OrdenesGrafico } from '../components/dashboard';
 
 export default function Dashboard() {
   const [datos, setDatos] = useState(null);
@@ -33,29 +26,33 @@ export default function Dashboard() {
       </Box>
     );
 
-  return (
-    <Box sx={{ maxWidth: 1700, margin: '32px auto', px: 2 }}>
+    return (
+    <Box sx={{ maxWidth: 1700, margin: '8px auto 32px auto', px: 2 }}>
       <Indicadores datos={datos} />
-      <Grid container columns={12} spacing={3}>
-        <Grid gridColumn="span 6">
+      <Grid container spacing={3} sx={{ mt: 2 }}>
+        {/* Estado de Activos */}
+        <Grid item xs={12} md={4}>
           <EstadoActivosGrafico activos={datos.activos} />
         </Grid>
-        <Grid gridColumn="span 6">
+        {/* Gráfico de Órdenes de trabajo */}
+        <Grid item xs={12} md={4}>
           <OrdenesGrafico workordersPorPeriodo={datos.workordersPorPeriodo} />
         </Grid>
-      </Grid>
-      <Grid container columns={12} spacing={3}>
-        <Grid gridColumn="span 6">
+        {/* Actividad Reciente con scroll */}
+        <Grid item xs={12} md={4}>
           <ActividadReciente actividades={datos.actividadReciente} />
         </Grid>
-        <Grid gridColumn="span 3">
-          <UsuariosPorRol usuarios={datos.usuariosPorRol} />
+      </Grid>
+      <Grid container spacing={3} sx={{ mt: 0.5 }}>
+
+        <Grid item xs={12} md={6} lg={8}>
+          <TecnicosDisponibles
+            tecnicos={datos.tecnicosDisponibles}
+            tecnicosOcupados={datos.tecnicosOcupados}
+          />
         </Grid>
-        <Grid gridColumn="span 3">
-        <TecnicosDisponibles
-          tecnicos={datos.tecnicosDisponibles}
-          tecnicosOcupados={datos.tecnicosOcupados}
-        />
+        <Grid item xs={12} md={6} lg={4}>
+          <UsuariosPorRol usuarios={datos.usuariosPorRol} />
         </Grid>
       </Grid>
     </Box>
