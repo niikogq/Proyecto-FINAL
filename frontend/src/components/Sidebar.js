@@ -16,14 +16,13 @@ const menuItems = [
   { key: 'activos', label: 'Activos', icon: <StorageIcon />, route: '/activos' },
   { key: 'workorders', label: 'Órdenes de trabajo', icon: <AssignmentIcon />, route: '/workorders' },
   { key: 'reportes', label: 'Reportes', icon: <AssessmentIcon />, route: '/reportes' },
-  { key: 'ai', label: 'AI', icon: <SmartToyIcon />, route: '/ai' },
-  { key: 'settings', label: 'Settings', icon: <SettingsIcon />, route: '/settings' }
+  { key: 'ia', label: 'Módulo IA', icon: <SmartToyIcon />, route: '/ia' }, // <--- ruta y label ajustado
+  { key: 'settings', label: 'Configuración', icon: <SettingsIcon />, route: '/settings' }
 ];
-
 // Restricciones por rol
 const permisosPorRol = {
-  admin:       ['dashboard', 'activos', 'workorders', 'reportes', 'ai', 'settings'],
-  supervisor:  ['dashboard', 'workorders', 'reportes', 'ai'],
+  admin:       ['dashboard', 'activos', 'workorders', 'reportes', 'ia', 'settings'],
+  supervisor:  ['dashboard', 'workorders', 'reportes', 'ia'],
   tecnico:     ['dashboard', 'workorders']
 };
 

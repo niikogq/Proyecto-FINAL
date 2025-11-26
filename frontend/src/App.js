@@ -10,7 +10,9 @@ import Header from './components/header';
 import Login from './components/Login';
 import Perfil from './pages/Perfil'; // O el nombre de tu carpeta/pages
 import WorkOrderDetailPage from './pages/WorkOrderDetailPage';
-// Layout para páginas internas: ¡Mueve a función y dale props!
+import IAModule from './pages/IAModule';
+
+
 const Layout = ({ children, usuario, handleLogout }) => {
   const location = useLocation();
   const titles = {
@@ -66,6 +68,7 @@ function App() {
                     <Route path="workorders" element={<WorkOrders usuario={usuario} />} />
                     <Route path="workorders/:id" element={<WorkOrderDetailPage usuario={usuario} />} />
                     <Route path="reportes" element={<Reports usuario={usuario} />} />
+                    <Route path="/ia" element={<IAModule />} />
                     <Route path="settings" element={<Settings usuario={usuario} />} />
                     <Route path="/perfil" element={<Perfil />} />
                     <Route path="*" element={<Navigate to="/dashboard" />} />

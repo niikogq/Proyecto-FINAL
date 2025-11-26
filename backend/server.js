@@ -23,6 +23,8 @@ app.use('/api/users', usersRouter);
 app.use('/api', reportesRouter);
 app.use('/api/notifications', require('./src/routes/notifications'));
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/ia', require('./src/routes/ia'));
+
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
