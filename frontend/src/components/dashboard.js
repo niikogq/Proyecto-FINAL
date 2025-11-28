@@ -30,10 +30,10 @@ export function Indicadores({ datos }) {
       <IndicadorCard
         color="#ffa726"
         icon={<ReportProblemIcon />}
-        titulo="Fallos Reportados Hoy"
+        titulo=""
         valor={datos.fallosHoy ?? 0}
-        subtitulo="2 de alta prioridad"
-        variacion="+3 respecto a ayer"
+        subtitulo=""
+        variacion=""
       />
     </Box>
   );
