@@ -24,3 +24,4 @@ router.post('/consultar', auth, allowRoles('admin', 'supervisor'), async (req, r
 });
 
 module.exports = router;
+

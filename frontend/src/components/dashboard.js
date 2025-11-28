@@ -246,3 +246,4 @@ export function TecnicosDisponibles({ tecnicos = [], tecnicosOcupados = [] }) {
       </Card>
     );
   }
+  
