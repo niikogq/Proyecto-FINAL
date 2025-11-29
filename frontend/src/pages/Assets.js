@@ -150,9 +150,10 @@ function Assets({ usuario }) {
       <TableContainer component={Paper} elevation={0} sx={{
         boxShadow: 'none',
         borderRadius: 2,
-        border: '1px solid #eee'
+        border: '1px solid #eee',
+        overflowX: 'auto' // <-- AGREGADO para scroll horizontal en móvil
       }}>
-        <Table>
+        <Table sx={{ minWidth: 650 }}> {/* minWidth asegura scroll en pantallas pequeñas */}
           <TableHead>
             <TableRow sx={{ background: '#fafafa' }}>
               <TableCell sx={{ fontWeight: 600 }}>Nombre</TableCell>

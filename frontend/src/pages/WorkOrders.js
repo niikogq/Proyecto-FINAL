@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Paper, Typography, Button, TextField, Snackbar } from '@mui/material';
+import { Paper, Typography, Button, TextField, Snackbar, Box } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
-
 import WorkOrderTable from '../components/WorkOrderTable';
 import WorkOrderForm from '../components/WorkOrderForm';
 import WorkOrderDelete from '../components/WorkOrderDelete';
@@ -43,13 +42,11 @@ const WorkOrders = ({ usuario }) => {
     setOpenEdit(true);
   };
   const handleCloseEdit = () => setOpenEdit(false);
-
   const handleOpenDelete = (order) => {
     setOrderToDelete(order);
     setOpenDelete(true);
   };
   const handleCloseDelete = () => setOpenDelete(false);
-
   const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
 
   const handleSubmit = async (form) => {
@@ -87,7 +84,6 @@ const WorkOrders = ({ usuario }) => {
     setOpenDetail(true);
   };
 
-
   const filteredOrders = orders.filter(order => {
     const txt = search.toLowerCase();
     return (
@@ -100,13 +96,14 @@ const WorkOrders = ({ usuario }) => {
   const isAdminOrSupervisor = usuario && (usuario.rol === 'admin' || usuario.rol === 'supervisor');
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Paper sx={{ p: { xs: 2, sm: 3 } }}>
       <Typography variant="h5" gutterBottom>Órdenes de Trabajo</Typography>
       <TextField
         label="Buscar por título, activo o responsable"
         value={search}
         onChange={e => setSearch(e.target.value)}
-        fullWidth sx={{ mb: 2 }}
+        fullWidth
+        sx={{ mb: 2 }}
       />
       {isAdminOrSupervisor && (
         <Button
@@ -118,13 +115,18 @@ const WorkOrders = ({ usuario }) => {
           + Nueva Orden
         </Button>
       )}
-      <WorkOrderTable
-        orders={filteredOrders}
-        onEdit={handleOpenEdit}
-        onDelete={handleOpenDelete}
-        onDetail={handleOpenDetail}
-        usuario={usuario}
-      />
+
+      {/* Wrapper con scroll horizontal para la tabla */}
+      <Box sx={{ overflowX: 'auto' }}>
+        <WorkOrderTable
+          orders={filteredOrders}
+          onEdit={handleOpenEdit}
+          onDelete={handleOpenDelete}
+          onDetail={handleOpenDetail}
+          usuario={usuario}
+        />
+      </Box>
+
       <WorkOrderForm
         open={openEdit}
         onClose={handleCloseEdit}
@@ -144,7 +146,6 @@ const WorkOrders = ({ usuario }) => {
         order={orderDetail}
         usuario={usuario}
         onStatusChange={() => {
-          // Refresca lista al cambiar estado
           axios.get('/api/workorders', getAuthHeader())
             .then(res => setOrders(res.data));
         }}

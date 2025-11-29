@@ -26,32 +26,56 @@ export default function Dashboard() {
       </Box>
     );
 
-    return (
-    <Box sx={{ maxWidth: 1700, margin: '8px auto 32px auto', px: 2 }}>
+  return (
+    <Box sx={{ 
+      width: '100%',
+      overflow: 'hidden'
+    }}>
+      {/* Indicadores grandes - SIN CAMBIOS */}
       <Indicadores datos={datos} />
-      <Grid container spacing={3} sx={{ mt: 2 }}>
-        {/* Estado de Activos */}
-        <Grid item xs={12} md={4}>
-          <EstadoActivosGrafico activos={datos.activos} />
-        </Grid>
-        {/* Gráfico de Órdenes de trabajo */}
-        <Grid item xs={12} md={4}>
-          <OrdenesGrafico workordersPorPeriodo={datos.workordersPorPeriodo} />
-        </Grid>
-        {/* Actividad Reciente con scroll */}
-        <Grid item xs={12} md={4}>
-          <ActividadReciente actividades={datos.actividadReciente} />
-        </Grid>
-      </Grid>
-      <Grid container spacing={3} sx={{ mt: 0.5 }}>
 
-        <Grid item xs={12} md={6} lg={8}>
+      {/* ✅ NUEVO: Contenedor para los gráficos con flexbox */}
+      <Box sx={{ maxWidth: '97%' }}>
+        {/* Los 2 primeros gráficos lado a lado con Flexbox */}
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 8,
+          flexWrap: 'wrap',
+          mt: 1,
+          mb: 2.5
+        }}>
+          {/* Estado de Activos - 50% */}
+          <Box sx={{ 
+            flex: '1 1 calc(50% - 32px)', 
+            minWidth: { xs: '100%', md: 'calc(50% - 32px)' } 
+          }}>
+            <EstadoActivosGrafico activos={datos.activos} />
+          </Box>
+          
+          {/* Órdenes de Trabajo - 50% */}
+          <Box sx={{ 
+            flex: '1 1 calc(50% - 32px)', 
+            minWidth: { xs: '100%', md: 'calc(50% - 32px)' } 
+          }}>
+            <OrdenesGrafico workordersPorPeriodo={datos.workordersPorPeriodo} />
+          </Box>
+        </Box>
+
+        {/* Actividad Reciente - 100% ancho */}
+        <Box sx={{ mb: 2.5 }}>
+          <ActividadReciente actividades={datos.actividadReciente} />
+        </Box>
+      </Box>
+
+      {/* Técnicos y usuarios - SIN CAMBIOS */}
+      <Grid container spacing={2.5} sx={{ mt: 0.5 }}>
+        <Grid item xs={12} lg={8}>
           <TecnicosDisponibles
             tecnicos={datos.tecnicosDisponibles}
             tecnicosOcupados={datos.tecnicosOcupados}
           />
         </Grid>
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} lg={4}>
           <UsuariosPorRol usuarios={datos.usuariosPorRol} />
         </Grid>
       </Grid>
