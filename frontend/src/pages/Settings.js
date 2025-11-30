@@ -122,7 +122,7 @@ function Settings({ usuario }) {
   }
 
   return (
-    <Paper sx={{ p: 4, maxWidth: 900, margin: '32px auto', borderRadius: 2 }}>
+    <Paper sx={{ p: 2, maxWidth: 980, margin: '12px', borderRadius: 2, mt: {md: 10} }}>
       <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
         Usuarios registrados
       </Typography>
@@ -175,13 +175,13 @@ function Settings({ usuario }) {
 
       {/* Paginación */}
       {pageCount > 1 &&
-        <Stack alignItems="center" sx={{ mt: 2 }}>
+        <Stack alignItems="center" sx={{ mt: 1 }}>
           <Pagination
             count={pageCount}
             page={page}
             onChange={(e, value) => setPage(value)}
             color="primary"
-            size="large"
+            size="small"
           />
         </Stack>
       }

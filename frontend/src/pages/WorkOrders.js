@@ -96,8 +96,16 @@ const WorkOrders = ({ usuario }) => {
   const isAdminOrSupervisor = usuario && (usuario.rol === 'admin' || usuario.rol === 'supervisor');
 
   return (
-    <Paper sx={{ p: { xs: 2, sm: 3 } }}>
-      <Typography variant="h5" gutterBottom>Órdenes de Trabajo</Typography>
+    <Paper sx={{
+      p: 3,
+      maxWidth: 980,
+      margin: '12px',
+      borderRadius: 2,
+      mt: {md: 10},
+      boxShadow: '0px 2px 16px rgba(40,68,89,.06)',
+      background: '#fff'
+    }}>      
+    <Typography variant="h5" gutterBottom>Órdenes de Trabajo</Typography>
       <TextField
         label="Buscar por título, activo o responsable"
         value={search}

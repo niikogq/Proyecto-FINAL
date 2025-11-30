@@ -17,7 +17,7 @@ export function Indicadores({ datos }) {
       mt: { xs: 2, md: 10 },
       mb: { xs: 2, md: 3 }, 
       gap: { xs: 2, md: 3 },
-      width: '100%'  // <-- AGREGADO
+      width: '94%'  // <-- AGREGADO
     }}>
       <IndicadorCard
         color="#44b979"

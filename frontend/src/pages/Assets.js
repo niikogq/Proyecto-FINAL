@@ -122,10 +122,11 @@ function Assets({ usuario }) {
 
   return (
     <Paper sx={{
-      p: 4,
-      maxWidth: 1650,
-      margin: '32px auto',
+      p: 3,
+      maxWidth: 980,
+      margin: '12px',
       borderRadius: 2,
+      mt: {md: 10},
       boxShadow: '0px 2px 16px rgba(40,68,89,.06)',
       background: '#fff'
     }}>

@@ -12,7 +12,7 @@ const Perfil = () => {
       justifyContent: 'center',
       alignItems: 'flex-start',
       background: '#f4f6fc',
-      pt: 6,
+      pt: 15,
       overflow: 'hidden'
     }}>
       <Paper elevation={6} sx={{

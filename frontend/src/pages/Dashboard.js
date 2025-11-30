@@ -35,27 +35,27 @@ export default function Dashboard() {
       <Indicadores datos={datos} />
 
       {/* ✅ NUEVO: Contenedor para los gráficos con flexbox */}
-      <Box sx={{ maxWidth: '97%' }}>
+      <Box sx={{ maxWidth: '91%' }}>
         {/* Los 2 primeros gráficos lado a lado con Flexbox */}
         <Box sx={{ 
           display: 'flex', 
-          gap: 8,
+          gap: 7,
           flexWrap: 'wrap',
           mt: 1,
           mb: 2.5
         }}>
           {/* Estado de Activos - 50% */}
           <Box sx={{ 
-            flex: '1 1 calc(50% - 32px)', 
-            minWidth: { xs: '100%', md: 'calc(50% - 32px)' } 
+            flex: '1 1 calc(50% - 28px)', 
+            minWidth: { xs: '100%', md: 'calc(50% - 28px)' } 
           }}>
             <EstadoActivosGrafico activos={datos.activos} />
           </Box>
           
           {/* Órdenes de Trabajo - 50% */}
           <Box sx={{ 
-            flex: '1 1 calc(50% - 32px)', 
-            minWidth: { xs: '100%', md: 'calc(50% - 32px)' } 
+            flex: '1 1 calc(50% - 28px)', 
+            minWidth: { xs: '100%', md: 'calc(50% - 28px)' } 
           }}>
             <OrdenesGrafico workordersPorPeriodo={datos.workordersPorPeriodo} />
           </Box>

@@ -44,7 +44,7 @@ const Header = ({ title, user, onLogout, onMenuClick, isMobile }) => {
 
   return (
     <AppBar
-      position="fixed"  // <-- CAMBIAR DE "sticky" A "fixed"
+      position="fixed "  // <-- CAMBIAR DE "sticky" A "fixed"
       elevation={0}
       sx={{
         background: '#fff',

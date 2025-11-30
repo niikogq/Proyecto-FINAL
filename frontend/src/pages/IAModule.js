@@ -46,7 +46,7 @@ export default function IAModule() {
   };
 
   return (
-    <Card sx={{ maxWidth: 650, mx: 'auto', mt: 4 }}>
+    <Card sx={{ maxWidth: 650, mx: '204px ', mt: 10 }}>
       <CardContent>
         <Typography variant="h5" mb={2}>Módulo Inteligente GEMPROTEC (IA)</Typography>
         <FormControl fullWidth sx={{ mb: 2 }}>

@@ -101,12 +101,13 @@ function Reports({ usuario }) {
 
   return (
     <Paper sx={{
-      p: 4,
-      maxWidth: 1450,
-      margin: '32px auto',
+      p: 3,
+      maxWidth: 980,
+      margin: '16px',
       borderRadius: 2,
       boxShadow: '0px 2px 16px rgba(40,68,89,.06)',
-      background: '#fff'
+      background: '#fff',
+      mt: {md: 10}
     }}>
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
         Reportes
