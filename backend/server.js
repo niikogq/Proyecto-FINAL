@@ -24,6 +24,7 @@ app.use('/api', reportesRouter);
 app.use('/api/notifications', require('./src/routes/notifications'));
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/ia', require('./src/routes/ia'));
+app.use('/api/user', require('./src/routes/user'));
 
 
 mongoose.connect(mongoURI, {

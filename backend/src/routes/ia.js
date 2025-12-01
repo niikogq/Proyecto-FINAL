@@ -1,27 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const { spawn } = require('child_process');
-const auth = require('../middleware/auth');
-const allowRoles = require('../middleware/roles');
+const axios = require('axios');
+const mongoose = require('mongoose');
 
-// Modular: puedes llamar distintas funciones con funcion: 'analizar_descripcion', etc.
-router.post('/consultar', auth, allowRoles('admin', 'supervisor'), async (req, res) => {
-  const { funcion, ...params } = req.body;
-  const py = spawn('python', ['./src/ia/ia_agent.py']);
-  let output = '';
-  py.stdin.write(JSON.stringify({ funcion, ...params }));
-  py.stdin.end();
-  py.stdout.on('data', data => output += data.toString());
-  py.stderr.on('data', data => console.error(data.toString()));
-  py.on('close', () => {
-    try {
-      const result = JSON.parse(output);
-      res.json(result);
-    } catch {
-      res.status(500).json({ error: 'Error procesando la IA', details: output });
-    }
-  });
+// Reusar modelo si ya existe, o crearlo solo una vez
+let WorkOrder;
+try {
+  WorkOrder = mongoose.model('WorkOrder');
+} catch {
+  WorkOrder = mongoose.model(
+    'WorkOrder',
+    new mongoose.Schema({}, { strict: false, collection: 'workorders' })
+  );
+}
+
+router.post('/orden-trabajo', async (req, res) => {
+  try {
+    const { workorderId } = req.body;
+    if (!workorderId) return res.status(400).json({ error: "workorderId es requerido" });
+
+    const orden = await WorkOrder.findById(workorderId).lean();
+    if (!orden) return res.status(404).json({ error: "Orden no encontrada" });
+
+    let descripcionCompleta =
+      `Descripción: ${orden.descripcion || 'No hay descripción'}\n` +
+      `Estado: ${orden.estado || "Desconocido"}\n` +
+      `Técnico asignado: ${orden.tecnico || 'Sin asignar'}\n` +
+      `Fecha asignación: ${orden.fecha_asignacion || 'No disponible'}\n` +
+      `Historial: ${JSON.stringify(orden.historial || [])}\n` +
+      `Observaciones: ${orden.observaciones || 'Ninguna'}\n`;
+
+    const response = await axios.post(
+      'http://localhost:8000/api/ia/orden-trabajo',
+      { descripcion: descripcionCompleta }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error en ruta IA:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;
-

@@ -105,6 +105,7 @@ function App() {
                 <Route path="settings" element={<Settings usuario={usuario} />} />
                 <Route path="perfil" element={<Perfil />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
+                <Route path="ia" element={<IAModule />} />
               </Routes>
             </Layout>
           ) : <Navigate to="/login" replace />

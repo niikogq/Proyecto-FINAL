@@ -101,20 +101,33 @@ router.put('/:id/comenzar', auth, allowRoles('tecnico'), async (req, res) => {
 
 // Técnico finaliza la orden (solo técnico asignado)
 router.put('/:id/finalizar', auth, allowRoles('tecnico'), async (req, res) => {
-  const order = await WorkOrder.findById(req.params.id);
-  if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
+  try {
+    const order = await WorkOrder.findById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
 
-  if (order.assignedTo !== req.user.email) {
-    return res.status(403).json({ error: 'No autorizado para finalizar esta orden' });
-  }
-  if (order.status !== 'En Progreso') {
-    return res.status(400).json({ error: 'La orden no está en estado En Progreso' });
-  }
+    if (order.assignedTo !== req.user.email) {
+      return res.status(403).json({ error: 'No autorizado para finalizar esta orden' });
+    }
+    if (order.status !== 'En Progreso') {
+      return res.status(400).json({ error: 'La orden no está en estado En Progreso' });
+    }
 
-  order.status = 'Completada';
-  order.endDate = new Date();
-  await order.save();
-  res.json(order);
+    order.status = 'Completada';
+    order.endDate = new Date();
+    await order.save();
+
+    // 🔁 Al completar la orden, devolver activo a "Activo"
+    if (order.asset) {
+      const Activo = require('../models/activos'); // mismo modelo que usas en /comenzar
+      await Activo.findByIdAndUpdate(order.asset, { estado: 'Activo' });
+    }
+
+    res.json(order);
+  } catch (err) {
+    console.error('Error al finalizar orden:', err);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
 });
+
 
 module.exports = router;
