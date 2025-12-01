@@ -107,7 +107,8 @@ function Reports({ usuario }) {
       borderRadius: 2,
       boxShadow: '0px 2px 16px rgba(40,68,89,.06)',
       background: '#fff',
-      mt: {md: 10}
+      mt: {md: 1
+      }
     }}>
       <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
         Reportes

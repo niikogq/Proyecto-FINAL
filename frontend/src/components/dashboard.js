@@ -14,7 +14,7 @@ export function Indicadores({ datos }) {
     <Box sx={{ 
       display: 'flex', 
       flexWrap: 'wrap',
-      mt: { xs: 2, md: 10 },
+      mt: { xs: 2, md: 1 },
       mb: { xs: 2, md: 3 }, 
       gap: { xs: 2, md: 3 },
       width: '94%'  // <-- AGREGADO

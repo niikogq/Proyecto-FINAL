@@ -126,7 +126,7 @@ function Assets({ usuario }) {
       maxWidth: 980,
       margin: '12px',
       borderRadius: 2,
-      mt: {md: 10},
+      mt: {md: 1},
       boxShadow: '0px 2px 16px rgba(40,68,89,.06)',
       background: '#fff'
     }}>

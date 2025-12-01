@@ -53,7 +53,7 @@ const Header = ({ title, user, onLogout, onMenuClick, isMobile }) => {
         borderBottom: '1px solid #ededed',
         zIndex: (theme) => theme.zIndex.drawer + 1,  // Por encima del drawer
         left: { xs: 0, md: 240 },  // En desktop, deja espacio para el sidebar (240px)
-        width: { xs: '100%', md: 'calc(100% - 240px)' }  // Ancho dinámico según sidebar
+        width: { xs: '100%', md: 'calc(100% - 0px)' }  // Ancho dinámico según sidebar
       }}
     >
 
