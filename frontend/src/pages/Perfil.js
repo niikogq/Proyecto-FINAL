@@ -85,8 +85,8 @@ const Perfil = () => {
         justifyContent: 'center',
         alignItems: 'flex-start',
         background: '#f4f6fc',
-        pt: 4,
-        pb: 4,
+        pt: 1,
+        pb: 1,
       }}
     >
       <Paper
@@ -94,7 +94,7 @@ const Perfil = () => {
         sx={{
           px: 4,
           py: 4,
-          maxWidth: 700,
+          maxWidth: 500,
           width: '100%',
           borderRadius: 3,
         }}
@@ -236,11 +236,6 @@ const Perfil = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2" sx={{ mt: 1, mb: 0.5 }}>
-                    Cambiar contraseña
-                  </Typography>
-                </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     label="Nueva contraseña"
