@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "ia": "cd src/ia && uvicorn main:app --reload --port 8000",
+    "dev": "concurrently \"npm:start\" \"npm run ia\""
   },
   "keywords": [],
   "author": "",
@@ -22,7 +23,6 @@
     "openai": "^6.9.1"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10"
   }
 }
